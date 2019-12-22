@@ -46,8 +46,8 @@ namespace DatingApp.API.Controllers
 
             // TODO : create CreatedAtRoute navigate to specific url after user created
             return StatusCode(201);
-
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
@@ -63,14 +63,15 @@ namespace DatingApp.API.Controllers
                 new Claim(ClaimTypes.Name, userFromRepo.Username) // שם משתמש
             };
 
-
+            // from appsettings.json minimum 12 characters
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Token").Value)); // הגדרת מפתח בקובץ json AppSettings.json
 
+            //signing credentials
             var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature); // אישורי כניסה באמצעות המפתח שהוגדר לעיל והאלגוריתם
 
-            var tokenDescriptor = new SecurityTokenDescriptor // 
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims), // שם משתמש והסיסמא
+                Subject = new ClaimsIdentity(claims), // מס' ייחודי ושם משתמש
                 Expires = DateTime.Now.AddDays(1), // תוקף האבטחה ליום אחד
                 SigningCredentials = creds // הגדרת האישור סוג
             };

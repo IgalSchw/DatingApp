@@ -23,8 +23,9 @@ namespace DatingApp.API.Controllers
         }
 
         // GET api/values
+        [AllowAnonymous] // allow to everyone
         [HttpGet]
-        public async Task<IActionResult> GetValues()
+        public async Task<IActionResult> GetValues() // only authorize users (Most send token)
         {
             var values = await _context.Values.ToListAsync();
 
@@ -32,7 +33,7 @@ namespace DatingApp.API.Controllers
         }
 
         // GET api/values/5
-        [AllowAnonymous]
+        [AllowAnonymous] // allow to everyone
         [HttpGet("{id}")]
         public async Task<IActionResult> GetValue(int id)
         {

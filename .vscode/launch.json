@@ -4,6 +4,23 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "name": "1) .NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+            //"processName": "Dotnet.exe"                    
+        },
+    
+        {
+            "name": "2) .NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            //"processId": "${command:pickProcess}"
+            "processName": "DatingApp.API.exe"                    
+        },
+                 
         {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
@@ -15,12 +32,9 @@
             "stopAtEntry": false,
             "console": "internalConsole"
         },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        },
+        
+       
+
         {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
