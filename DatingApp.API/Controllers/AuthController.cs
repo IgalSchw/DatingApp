@@ -25,7 +25,7 @@ namespace DatingApp.API.Controllers
             this.repo = repo;
         }
 
-        [HttpPost("register")]
+        [HttpPost("register")]    
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
             // using this validation we must to delete [ApiController] and add [FromBody]UserForRegisterDto annotations in this method
@@ -51,39 +51,38 @@ namespace DatingApp.API.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-        {
-            var userFromRepo = await repo.Login(userForLoginDto.Username.ToLower(),userForLoginDto.Password);
+        {                          
+                var userFromRepo = await repo.Login(userForLoginDto.Username.ToLower(),userForLoginDto.Password);
 
-            if (userFromRepo == null)
-                return Unauthorized(); // לא מורשה להיכנס
+                if (userFromRepo == null)
+                    return Unauthorized(); // לא מורשה להיכנס
 
-            var claims = new[] // להגדיר פרמטרים הכרה של המשתמש
-            {
-                new Claim(ClaimTypes.NameIdentifier,userFromRepo.Id.ToString()), // מס' מזהה
-                new Claim(ClaimTypes.Name, userFromRepo.Username) // שם משתמש
-            };
+                var claims = new[] // להגדיר פרמטרים הכרה של המשתמש
+                {
+                    new Claim(ClaimTypes.NameIdentifier,userFromRepo.Id.ToString()), // מס' מזהה
+                    new Claim(ClaimTypes.Name, userFromRepo.Username) // שם משתמש
+                };
 
-            // from appsettings.json minimum 12 characters
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Token").Value)); // הגדרת מפתח בקובץ json AppSettings.json
+                // from appsettings.json minimum 12 characters
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Token").Value)); // הגדרת מפתח בקובץ json AppSettings.json
 
-            //signing credentials
-            var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature); // אישורי כניסה באמצעות המפתח שהוגדר לעיל והאלגוריתם
+                //signing credentials
+                var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature); // אישורי כניסה באמצעות המפתח שהוגדר לעיל והאלגוריתם
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims), // מס' ייחודי ושם משתמש
-                Expires = DateTime.Now.AddDays(1), // תוקף האבטחה ליום אחד
-                SigningCredentials = creds // הגדרת האישור סוג
-            };
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims), // מס' ייחודי ושם משתמש
+                    Expires = DateTime.Now.AddDays(1), // תוקף האבטחה ליום אחד
+                    SigningCredentials = creds // הגדרת האישור סוג
+                };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenHandler = new JwtSecurityTokenHandler(); // json web token
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+                var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok( new { // ה טוקן חוזר ללקוח כשההתחברות הצליחה
-                token = tokenHandler.WriteToken(token)
-            });
-
+                return Ok( new { // ה טוקן חוזר ללקוח כשההתחברות הצליחה
+                    token = tokenHandler.WriteToken(token)
+                });                
+            }                        
         }
     }
-}
