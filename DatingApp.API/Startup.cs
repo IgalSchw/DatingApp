@@ -58,7 +58,7 @@ namespace DatingApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
+            else // setting up global exceptions handler
             {
                 app.UseExceptionHandler(builder =>{
                     builder.Run(async context=>{
